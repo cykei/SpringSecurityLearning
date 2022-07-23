@@ -13,11 +13,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .anyRequest().fullyAuthenticated()
-                .and()
-                .formLogin();
+        http.authorizeRequests()
+                .antMatchers("/design").access("hasRole('ROLE_USER')")
+                .antMatchers("/", "/**").access("permitAll")
+                .and() // 인증구성이 끝나서 추가적인 http 구성을 적용할 준비가 되었다.
+                .formLogin()
+                .loginPage("/loginForm");
     }
 
     @Override
@@ -33,4 +34,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(new BCryptPasswordEncoder())
                 .passwordAttribute("userPassword");
     }
+
+
 }
